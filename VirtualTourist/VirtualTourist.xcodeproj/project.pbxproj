@@ -13,6 +13,7 @@
 		BA8FADF62325A23D0032A8E3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA8FADF52325A23D0032A8E3 /* Assets.xcassets */; };
 		BA8FADF92325A23D0032A8E3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BA8FADF72325A23D0032A8E3 /* LaunchScreen.storyboard */; };
 		BA8FAE0723275BDA0032A8E3 /* VirtualTourist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BA8FAE0523275BDA0032A8E3 /* VirtualTourist.xcdatamodeld */; };
+		BA8FAE0B2332D58D0032A8E3 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8FAE0A2332D58D0032A8E3 /* DataController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		BA8FADF82325A23D0032A8E3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BA8FADFA2325A23D0032A8E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BA8FAE0623275BDA0032A8E3 /* VirtualTourist.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VirtualTourist.xcdatamodel; sourceTree = "<group>"; };
+		BA8FAE0A2332D58D0032A8E3 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +105,7 @@
 			isa = PBXGroup;
 			children = (
 				BA8FAE0523275BDA0032A8E3 /* VirtualTourist.xcdatamodeld */,
+				BA8FAE0A2332D58D0032A8E3 /* DataController.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -179,6 +182,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BA8FADF12325A23C0032A8E3 /* TravelLocationsMapView.swift in Sources */,
+				BA8FAE0B2332D58D0032A8E3 /* DataController.swift in Sources */,
 				BA8FADEF2325A23C0032A8E3 /* AppDelegate.swift in Sources */,
 				BA8FAE0723275BDA0032A8E3 /* VirtualTourist.xcdatamodeld in Sources */,
 			);
