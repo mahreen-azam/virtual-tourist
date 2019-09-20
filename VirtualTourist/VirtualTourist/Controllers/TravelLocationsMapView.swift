@@ -22,13 +22,13 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
         
         if let didMapChange = UserDefaults.standard.value(forKey: "mapChanges") {
             if didMapChange as! Bool {
-                print("Changes") // Update this to set map to updated version
-                mapView.centerCoordinate.latitude = UserDefaults.standard.value(forKey: "mapLatitude") as! Double
-                mapView.centerCoordinate.longitude = UserDefaults.standard.value(forKey: "mapLongitude") as! Double
+                var updateMapView = UserDefaults.standard.value(forKey: "mapView") as! [Double]
+        
+                let centerCoordinates = CLLocationCoordinate2DMake(updateMapView[0],updateMapView[1])
+                self.mapView.setRegion(MKCoordinateRegion(center: centerCoordinates, span: MKCoordinateSpan(latitudeDelta: updateMapView[2], longitudeDelta: updateMapView[3])), animated: true)
             }
         } else {
             UserDefaults.standard.setValue(false, forKey: "mapChanges")
-            print("first launch")
         }
         
         // Adds long press recognizer which will add pins to the map when recognized
@@ -77,9 +77,9 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         UserDefaults.standard.setValue(true, forKey: "mapChanges")
-        UserDefaults.standard.setValue(Double(mapView.centerCoordinate.latitude.description), forKey: "mapLatitude")
-        UserDefaults.standard.setValue(Double(mapView.centerCoordinate.longitude.description), forKey: "mapLongitude")
-        print("Hello")
+        
+        let updateMapView = [Double(mapView.centerCoordinate.latitude), Double(mapView.centerCoordinate.longitude), Double(mapView.region.span.latitudeDelta), Double(mapView.region.span.longitudeDelta)]
+            UserDefaults.standard.setValue(updateMapView, forKey: "mapView")
     }
 }
 
