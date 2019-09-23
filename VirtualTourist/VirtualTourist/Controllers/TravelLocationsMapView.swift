@@ -81,5 +81,16 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
         let updateMapView = [Double(mapView.centerCoordinate.latitude), Double(mapView.centerCoordinate.longitude), Double(mapView.region.span.latitudeDelta), Double(mapView.region.span.longitudeDelta)]
             UserDefaults.standard.setValue(updateMapView, forKey: "mapView")
     }
+    
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        
+        performSegue(withIdentifier: "showPhotoAlbumView", sender: nil)
+//        if control == view.rightCalloutAccessoryView {
+//            let app = UIApplication.shared
+//            if let toOpen = view.annotation?.subtitle! {
+//                app.open(URL(string: toOpen)!, options: [:], completionHandler: nil)
+//            }
+//        }
+    }
 }
 

@@ -41,7 +41,7 @@
                     <connections>
                         <outlet property="editButton" destination="xxG-T2-mUN" id="9xH-zo-EJi"/>
                         <outlet property="mapView" destination="qZa-Df-axR" id="KL1-08-8yn"/>
-                        <segue destination="lSw-h6-GdI" kind="show" id="5Mn-S8-p1V"/>
+                        <segue destination="lSw-h6-GdI" kind="show" identifier="showPhotoAlbumView" id="5Mn-S8-p1V"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -51,7 +51,7 @@
         <!--Photo Album-->
         <scene sceneID="3k0-rb-H1P">
             <objects>
-                <viewController id="lSw-h6-GdI" userLabel="Photo Album" sceneMemberID="viewController">
+                <viewController id="lSw-h6-GdI" userLabel="Photo Album" customClass="PhotoAlbumView" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="84E-5e-Vbc">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
