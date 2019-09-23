@@ -82,15 +82,8 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
             UserDefaults.standard.setValue(updateMapView, forKey: "mapView")
     }
     
-    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         performSegue(withIdentifier: "showPhotoAlbumView", sender: nil)
-//        if control == view.rightCalloutAccessoryView {
-//            let app = UIApplication.shared
-//            if let toOpen = view.annotation?.subtitle! {
-//                app.open(URL(string: toOpen)!, options: [:], completionHandler: nil)
-//            }
-//        }
     }
 }
 
