@@ -83,7 +83,15 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        performSegue(withIdentifier: "showPhotoAlbumView", sender: nil)
+        let pin = view.annotation?.coordinate
+        performSegue(withIdentifier: "showPhotoAlbumView", sender: pin)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "showPhotoAlbumView" {
+            let photoAlbumVC = segue.destination as! PhotoAlbumView
+            photoAlbumVC.centerCoordinate =  sender as? (CLLocationCoordinate2D)
+        }
     }
 }
 

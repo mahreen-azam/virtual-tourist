@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="NCL-rb-ggh">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="NCL-rb-ggh">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -32,14 +32,10 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" title="Virtual Tourist" id="hsU-kO-gZ3">
-                        <barButtonItem key="rightBarButtonItem" title="Edit" id="xxG-T2-mUN">
-                            <connections>
-                                <action selector="tapEditButton:" destination="BYZ-38-t0r" id="1uJ-Vh-4TB"/>
-                            </connections>
-                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Edit" id="xxG-T2-mUN"/>
                     </navigationItem>
                     <connections>
-                        <outlet property="editButton" destination="xxG-T2-mUN" id="9xH-zo-EJi"/>
+                        <outlet property="editButton" destination="xxG-T2-mUN" id="mDP-Rd-5GO"/>
                         <outlet property="mapView" destination="qZa-Df-axR" id="KL1-08-8yn"/>
                         <segue destination="lSw-h6-GdI" kind="show" identifier="showPhotoAlbumView" id="5Mn-S8-p1V"/>
                     </connections>
@@ -56,18 +52,32 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="uFl-OO-TT5">
-                                <rect key="frame" x="0.0" y="64" width="375" height="196"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="uFl-OO-TT5">
+                                <rect key="frame" x="0.0" y="64" width="375" height="153"/>
                             </mapView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9ey-x8-1bX">
-                                <rect key="frame" x="0.0" y="260" width="375" height="407"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="9ey-x8-1bX">
+                                <rect key="frame" x="0.0" y="217" width="375" height="450"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="450" id="sgg-3C-0wb"/>
+                                </constraints>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="uFl-OO-TT5" firstAttribute="trailing" secondItem="cNS-AW-OnF" secondAttribute="trailing" id="5KI-ZX-a3B"/>
+                            <constraint firstItem="9ey-x8-1bX" firstAttribute="bottom" secondItem="cNS-AW-OnF" secondAttribute="bottom" id="Cye-TA-Jmv"/>
+                            <constraint firstItem="9ey-x8-1bX" firstAttribute="trailing" secondItem="uFl-OO-TT5" secondAttribute="trailing" id="GHI-Dz-Asm"/>
+                            <constraint firstItem="9ey-x8-1bX" firstAttribute="top" secondItem="uFl-OO-TT5" secondAttribute="bottom" id="Lmu-C0-Uuc"/>
+                            <constraint firstItem="uFl-OO-TT5" firstAttribute="leading" secondItem="cNS-AW-OnF" secondAttribute="leading" id="VbX-tZ-7Uk"/>
+                            <constraint firstItem="uFl-OO-TT5" firstAttribute="top" secondItem="cNS-AW-OnF" secondAttribute="top" id="XAe-ax-hny"/>
+                            <constraint firstItem="9ey-x8-1bX" firstAttribute="leading" secondItem="uFl-OO-TT5" secondAttribute="leading" id="e11-rT-VRT"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="cNS-AW-OnF"/>
                     </view>
+                    <connections>
+                        <outlet property="mapView" destination="uFl-OO-TT5" id="XdL-vk-P8g"/>
+                        <outlet property="photoAlbum" destination="9ey-x8-1bX" id="yz6-4h-TPE"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ihs-8D-dGF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

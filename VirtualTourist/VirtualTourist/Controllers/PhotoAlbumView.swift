@@ -7,24 +7,42 @@
 //
 
 import UIKit
+import MapKit
 
-class PhotoAlbumView: UIViewController {
+class PhotoAlbumView: UIViewController, MKMapViewDelegate {
+    
+    @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var photoAlbum: UIImageView!
+    
+    // MARK: Global Variables
+    var centerCoordinate: CLLocationCoordinate2D!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        mapView.delegate = self
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    override func viewDidAppear(_ animated: Bool) {
+        
+        guard centerCoordinate != nil else {
+            self.dismiss(animated: true, completion: nil)
+            //self.showFailure(title: "Failed to Find Location", message: "Please try again with a valid location")
+            print("Failed to get coordinate")
+            return
+        }
+        createPin(centerCoordinate: centerCoordinate)
     }
-    */
+    
+    func createPin(centerCoordinate: CLLocationCoordinate2D){
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = centerCoordinate
+        
+        let mapArea = MKCoordinateRegion(center: centerCoordinate, latitudinalMeters: 500, longitudinalMeters: 500)
+        
+        DispatchQueue.main.async {
+            self.mapView.addAnnotation(annotation)
+            self.mapView.setRegion(mapArea, animated: true)
+        }
+    }
 
 }
