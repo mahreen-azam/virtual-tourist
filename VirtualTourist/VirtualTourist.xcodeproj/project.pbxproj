@@ -15,6 +15,7 @@
 		BA8FAE0723275BDA0032A8E3 /* VirtualTourist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BA8FAE0523275BDA0032A8E3 /* VirtualTourist.xcdatamodeld */; };
 		BA8FAE0B2332D58D0032A8E3 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA8FAE0A2332D58D0032A8E3 /* DataController.swift */; };
 		BAB939852335797600B23B9C /* PhotoAlbumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB939842335797600B23B9C /* PhotoAlbumView.swift */; };
+		BAF3D24F233B1E7F008B6187 /* FlickerClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF3D24E233B1E7F008B6187 /* FlickerClient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		BA8FAE0623275BDA0032A8E3 /* VirtualTourist.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VirtualTourist.xcdatamodel; sourceTree = "<group>"; };
 		BA8FAE0A2332D58D0032A8E3 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		BAB939842335797600B23B9C /* PhotoAlbumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAlbumView.swift; sourceTree = "<group>"; };
+		BAF3D24E233B1E7F008B6187 /* FlickerClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickerClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,10 +109,19 @@
 		BA8FAE042325A3A20032A8E3 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				BAF3D24D233B1E3A008B6187 /* FlickerClient */,
 				BA8FAE0523275BDA0032A8E3 /* VirtualTourist.xcdatamodeld */,
 				BA8FAE0A2332D58D0032A8E3 /* DataController.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		BAF3D24D233B1E3A008B6187 /* FlickerClient */ = {
+			isa = PBXGroup;
+			children = (
+				BAF3D24E233B1E7F008B6187 /* FlickerClient.swift */,
+			);
+			path = FlickerClient;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -185,6 +196,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BA8FADF12325A23C0032A8E3 /* TravelLocationsMapView.swift in Sources */,
+				BAF3D24F233B1E7F008B6187 /* FlickerClient.swift in Sources */,
 				BA8FAE0B2332D58D0032A8E3 /* DataController.swift in Sources */,
 				BA8FADEF2325A23C0032A8E3 /* AppDelegate.swift in Sources */,
 				BA8FAE0723275BDA0032A8E3 /* VirtualTourist.xcdatamodeld in Sources */,
