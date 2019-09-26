@@ -20,6 +20,8 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
+        
+        getPhotoData{}
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -42,6 +44,16 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
         DispatchQueue.main.async {
             self.mapView.addAnnotation(annotation)
             self.mapView.setRegion(mapArea, animated: true)
+        }
+    }
+    
+    func getPhotoData(completion: @escaping () -> Void) {
+        FlickerClient.getPhotos() { locations, error in
+            if let error = error {
+                print(error.localizedDescription)
+            } else {
+                print("success?")
+            }
         }
     }
 
