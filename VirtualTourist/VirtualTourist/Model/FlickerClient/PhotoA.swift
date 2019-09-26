@@ -9,5 +9,5 @@
 import Foundation
 
 struct PhotoA: Codable {
-    let photos: [PhotoB]
+    let photos: PhotoB
 }
