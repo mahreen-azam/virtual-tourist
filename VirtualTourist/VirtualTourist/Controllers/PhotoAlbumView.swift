@@ -17,6 +17,7 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     
     // MARK: Global Variables
     var centerCoordinate: CLLocationCoordinate2D!
+    var photoData:[PhotoC]?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,10 +50,11 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     }
     
     func getPhotoData(completion: @escaping () -> Void) {
-        FlickerClient.getPhotos() { locations, error in
+        FlickerClient.getPhotos() { photoDataResponse, error in
             if let error = error {
                 print(error.localizedDescription)
             } else {
+                self.photoData = photoDataResponse?.photos.photo
                 print("success?")
             }
         }
@@ -60,27 +62,32 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
 }
 
 //MARK: UICollectionViewDelegate
-extension PhotoAlbumView: UICollectionViewDelegate{
+extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 9
+        return photoData!.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FlickerImageCell", for: indexPath)
         return cell
     }
-}
-
-//MARK: UICollectionViewDataSource
-extension PhotoAlbumView: UICollectionViewDataSource {
+    
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
     }
 }
 
+////MARK: UICollectionViewDataSource
+//extension PhotoAlbumView: UICollectionViewDataSource {
+//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//
+//    }
+//}
+
 //MARK: UICollectionViewDelegateFlowLayout
-extension PhotoAlbumView: UICollectionViewDelegateFlowLayout{
+extension PhotoAlbumView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return collectionView.frame.size
     }
