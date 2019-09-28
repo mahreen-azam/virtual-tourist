@@ -9,11 +9,19 @@
 import UIKit
 import MapKit
 
+enum Result<T> {
+    case success(T)
+    case failure(Error)
+}
+
 class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
     
     @IBOutlet weak var photoAlbumView: UICollectionView!
+    
+    
+ 
     
     // MARK: Global Variables
     var centerCoordinate: CLLocationCoordinate2D!
@@ -23,6 +31,13 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
         super.viewDidLoad()
         mapView.delegate = self
         
+        getPhotoData { result in
+            guard case .success(let photoDataResponse) = result else {
+                print("Failed to retrieve photos")
+                //self.showDataRetrievalFailure(message: "Failure to retrieve location data")
+                return
+            }
+        }
         //getPhotoData{}
     }
     
@@ -49,15 +64,17 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
         }
     }
     
-    func getPhotoData(completion: @escaping () -> Void) {
+    func getPhotoData(completion: @escaping (Result<PhotoA?>) -> Void) {
         FlickerClient.getPhotos() { photoDataResponse, error in
             DispatchQueue.main.async {
                 if let error = error {
                     print(error.localizedDescription)
+                     completion(.failure(error))
                 } else {
                     self.photoData = photoDataResponse?.photos.photo ?? []
+                    completion(.success(photoDataResponse))
                     print("success?")
-                    print(photoDataResponse?.photos.photo)
+                  //  print(photoDataResponse?.photos.photo)
                 }
             }
         }
@@ -67,12 +84,13 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
 //MARK: UICollectionViewDelegate
 extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
     
+    
+    
 //    func numberOfSections(in collectionView: UICollectionView) -> Int {
 //        return 1
 //    }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        getPhotoData{}
         
         if photoData.count > 0 {
             return photoData.count
@@ -83,6 +101,17 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FlickerImageCell", for: indexPath)
+        
+     //   let image =  photoData[indexPath.row]
+        
+        // Code for creating an image view and setting the image for each cell
+        var imageView: UIImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 115, height: 115))
+        
+        let url = URL(string: "https://farm66.staticflickr.com/65535/48062994033_7c59ee4741.jpg")
+        let data = try? Data(contentsOf: url!)
+        imageView.image = UIImage(data: data!)
+        cell.contentView.addSubview(imageView)
+        
         return cell
     }
     
