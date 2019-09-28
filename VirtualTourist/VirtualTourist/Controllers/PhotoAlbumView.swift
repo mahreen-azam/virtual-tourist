@@ -17,13 +17,13 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     
     // MARK: Global Variables
     var centerCoordinate: CLLocationCoordinate2D!
-    var photoData:[PhotoC]?
+    var photoData:[PhotoC] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
         
-        getPhotoData{}
+        //getPhotoData{}
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -51,11 +51,14 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     
     func getPhotoData(completion: @escaping () -> Void) {
         FlickerClient.getPhotos() { photoDataResponse, error in
-            if let error = error {
-                print(error.localizedDescription)
-            } else {
-                self.photoData = photoDataResponse?.photos.photo
-                print("success?")
+            DispatchQueue.main.async {
+                if let error = error {
+                    print(error.localizedDescription)
+                } else {
+                    self.photoData = photoDataResponse?.photos.photo ?? []
+                    print("success?")
+                    print(photoDataResponse?.photos.photo)
+                }
             }
         }
     }
@@ -64,8 +67,18 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
 //MARK: UICollectionViewDelegate
 extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
     
+//    func numberOfSections(in collectionView: UICollectionView) -> Int {
+//        return 1
+//    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photoData!.count
+        getPhotoData{}
+        
+        if photoData.count > 0 {
+            return photoData.count
+        } else {
+            return 20
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -86,11 +99,11 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
 //    }
 //}
 
-//MARK: UICollectionViewDelegateFlowLayout
-extension PhotoAlbumView: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return collectionView.frame.size
-    }
-}
+////MARK: UICollectionViewDelegateFlowLayout
+//extension PhotoAlbumView: UICollectionViewDelegateFlowLayout {
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+//        return collectionView.frame.size
+//    }
+//}
 
 
