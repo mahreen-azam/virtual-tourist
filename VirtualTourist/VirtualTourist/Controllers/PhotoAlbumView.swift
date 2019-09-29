@@ -16,12 +16,9 @@ enum Result<T> {
 
 class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     
+    // MARK: Outlets
     @IBOutlet weak var mapView: MKMapView!
-    
     @IBOutlet weak var photoAlbumView: UICollectionView!
-    
-    
- 
     
     // MARK: Global Variables
     var centerCoordinate: CLLocationCoordinate2D!
@@ -38,7 +35,6 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
                 return
             }
         }
-        //getPhotoData{}
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -79,17 +75,24 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
             }
         }
     }
+    
+    func convertPhotoResponseIntoImages() -> [UIImage] {
+        var imageArray: [UIImage] = []
+        
+        for dataEntries in photoData {
+            let url = URL(string: "https://farm\(dataEntries.farm).staticflickr.com/\(dataEntries.server)/\(dataEntries.id)_\(dataEntries.secret).jpg")
+            let data = try? Data(contentsOf: url!)
+            let image = (UIImage(data: data!)!)
+            
+           imageArray.append(image)
+        }
+        return imageArray
+    }
 }
 
 //MARK: UICollectionViewDelegate
 extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
-    
-    
-    
-//    func numberOfSections(in collectionView: UICollectionView) -> Int {
-//        return 1
-//    }
-    
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         if photoData.count > 0 {
@@ -102,17 +105,31 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FlickerImageCell", for: indexPath)
         
-     //   let image =  photoData[indexPath.row]
-        
         // Code for creating an image view and setting the image for each cell
         var imageView: UIImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 115, height: 115))
-        
-        let url = URL(string: "https://farm66.staticflickr.com/65535/48062994033_7c59ee4741.jpg")
-        let data = try? Data(contentsOf: url!)
-        imageView.image = UIImage(data: data!)
         cell.contentView.addSubview(imageView)
+        imageView.image = UIImage(named: "VirtualTourist_120") //Change this to placeholsder image
+        
+        if photoData.count > 0 {
+            var imageArray = self.convertPhotoResponseIntoImages()
+            if imageArray.count > 0 {
+                DispatchQueue.main.async {
+                    imageView.image = imageArray[indexPath.row]
+                }
+            }
+           
+        }
         
         return cell
+        
+        
+        
+        //   let image =  photoData[indexPath.row]
+        
+        //        let url = URL(string: "https://farm66.staticflickr.com/65535/48062994033_7c59ee4741.jpg")
+        //        let data = try? Data(contentsOf: url!)
+        //        imageView.image = UIImage(data: data!)
+        // imageView.image = UIImage(named: "VirtualTourist_120")
     }
     
     
