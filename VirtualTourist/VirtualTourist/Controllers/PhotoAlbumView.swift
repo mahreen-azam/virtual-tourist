@@ -23,21 +23,11 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     // MARK: Global Variables
     var centerCoordinate: CLLocationCoordinate2D!
     var photoData:[PhotoC] = []
+    var imageArray: [UIImage] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
-        
-        getPhotoData { result in
-            guard case .success(let photoDataResponse) = result else {
-                print("Failed to retrieve photos")
-                //self.showDataRetrievalFailure(message: "Failure to retrieve location data")
-                return
-            }
-        }
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
         
         guard centerCoordinate != nil else {
             self.dismiss(animated: true, completion: nil)
@@ -45,9 +35,21 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
             print("Failed to get coordinate")
             return
         }
+        
         createPin(centerCoordinate: centerCoordinate)
+        
+        getPhotoData { result in
+            guard case .success(let photoDataResponse) = result else {
+                print("Failed to retrieve photos")
+                //self.showDataRetrievalFailure(message: "Failure to retrieve location data")
+                return
+            }
+        self.imageArray = self.convertPhotoResponseIntoImages()
+        self.photoAlbumView.reloadData()
+        }
     }
     
+    //Mark: Functions for setting up the Map view
     func createPin(centerCoordinate: CLLocationCoordinate2D){
         let annotation = MKPointAnnotation()
         annotation.coordinate = centerCoordinate
@@ -59,9 +61,9 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
             self.mapView.setRegion(mapArea, animated: true)
         }
     }
-    
+    //MARK: Functions for getting and converting photo data
     func getPhotoData(completion: @escaping (Result<PhotoA?>) -> Void) {
-        FlickerClient.getPhotos() { photoDataResponse, error in
+        FlickerClient.getPhotos(latitude: self.centerCoordinate.latitude, longitude: self.centerCoordinate.longitude) { photoDataResponse, error in
             DispatchQueue.main.async {
                 if let error = error {
                     print(error.localizedDescription)
@@ -98,7 +100,7 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
         if photoData.count > 0 {
             return photoData.count
         } else {
-            return 20
+            return 15
         }
     }
     
@@ -108,30 +110,17 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
         // Code for creating an image view and setting the image for each cell
         var imageView: UIImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 115, height: 115))
         cell.contentView.addSubview(imageView)
-        imageView.image = UIImage(named: "VirtualTourist_120") //Change this to placeholsder image
+        imageView.image = UIImage(named: "VirtualTourist_120") //Change this to placeholder image
+        // Add loading indicator?
         
         if photoData.count > 0 {
-            var imageArray = self.convertPhotoResponseIntoImages()
-            if imageArray.count > 0 {
-                DispatchQueue.main.async {
-                    imageView.image = imageArray[indexPath.row]
-                }
+            DispatchQueue.main.async {
+                imageView.image = self.imageArray[indexPath.row]
             }
-           
         }
         
         return cell
-        
-        
-        
-        //   let image =  photoData[indexPath.row]
-        
-        //        let url = URL(string: "https://farm66.staticflickr.com/65535/48062994033_7c59ee4741.jpg")
-        //        let data = try? Data(contentsOf: url!)
-        //        imageView.image = UIImage(data: data!)
-        // imageView.image = UIImage(named: "VirtualTourist_120")
     }
-    
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
