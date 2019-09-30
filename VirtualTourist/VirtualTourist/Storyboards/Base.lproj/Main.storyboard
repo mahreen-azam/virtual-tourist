@@ -83,6 +83,25 @@
                                     <outlet property="delegate" destination="lSw-h6-GdI" id="Jyn-Lv-5UW"/>
                                 </connections>
                             </collectionView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="N1p-A4-zIm">
+                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <items>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="c4K-rg-Zmp"/>
+                                    <barButtonItem style="plain" id="O6g-YE-htd">
+                                        <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="8gE-bo-1Ly">
+                                            <rect key="frame" x="109" y="1.5" width="157" height="41"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="23"/>
+                                            <state key="normal" title="New Collection"/>
+                                            <connections>
+                                                <action selector="tapToolBarButton:" destination="lSw-h6-GdI" eventType="touchUpInside" id="a31-Eh-Db9"/>
+                                            </connections>
+                                        </button>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="3Jh-2b-DEV"/>
+                                </items>
+                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -99,6 +118,7 @@
                     <connections>
                         <outlet property="mapView" destination="uFl-OO-TT5" id="XdL-vk-P8g"/>
                         <outlet property="photoAlbumView" destination="vdH-Fp-08Z" id="VUZ-49-6km"/>
+                        <outlet property="toolBarButton" destination="8gE-bo-1Ly" id="eIm-wG-CIx"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ihs-8D-dGF" userLabel="First Responder" sceneMemberID="firstResponder"/>

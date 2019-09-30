@@ -19,6 +19,7 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     // MARK: Outlets
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var photoAlbumView: UICollectionView!
+    @IBOutlet weak var toolBarButton: UIButton!
     
     // MARK: Global Variables
     var centerCoordinate: CLLocationCoordinate2D!
@@ -90,6 +91,14 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
         }
         return imageArray
     }
+    
+    @IBAction func tapToolBarButton(_ sender: Any) {
+        // Create a global variable that tracks which "page" you are on
+        //Increment the page number and send it in the photo request
+        //Disable button when images are loading 
+        print("New collection tapped")
+    }
+    
 }
 
 //MARK: UICollectionViewDelegate
@@ -123,7 +132,8 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+        self.toolBarButton.setTitle("Remove Selected Images", for: []) // Update size of text and spacing to make it fit maybe call a function that does this
+    
     }
 }
 
