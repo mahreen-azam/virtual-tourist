@@ -101,7 +101,7 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
         //Disable button when images are loading
         // Set an if statement to check if this button is in "New collection" mode or "remove photos" mode
         print("New collection tapped")
-        pageNumber = pageNumber + 1
+        pageNumber = pageNumber + 1 // save the max page number and then compare page number to max page number, if they are equal, display "no more photos" 
         reloadCollectionViewData()
     }
     
