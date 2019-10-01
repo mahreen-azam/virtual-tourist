@@ -12,8 +12,6 @@ class FlickerClient {
     
     //MARK: Global Variables
     static let apiKey = "1058b6fb9fbb08d1d1fa226fa9793384"
-   // static var latitude: Double = 0 // = 37.5407
-   // static var longitude: Double = 0 // = 77.4360
 
     enum Endpoints {
         case getPhotos
@@ -23,10 +21,6 @@ class FlickerClient {
             case .getPhotos: return "https://www.flickr.com/services/rest/?method=flickr.photos.search" + "&api_key=\(apiKey)" + "&format=json&nojsoncallback=1" + "&per_page=15"
             }
         }
-//
-//        var url: URL {
-//            return URL(string: stringValue)!
-//        }
     }
     
     class func taskForGETRequest<ResponseType: Decodable>(url: URL, responseType: ResponseType.Type, completion: @escaping (ResponseType?, Error?) -> Void) -> URLSessionDataTask {
@@ -54,10 +48,10 @@ class FlickerClient {
         return task
     }
     
-    class func getPhotos(latitude: Double, longitude: Double, completion: @escaping (PhotoA?, Error?) -> Void) {
-        var photoURLWithLocation = Endpoints.getPhotos.stringValue + "&lat=\(latitude)" + "&lon=\(longitude)"
+    class func getPhotos(latitude: Double, longitude: Double, pages: Int, completion: @escaping (PhotoA?, Error?) -> Void) {
+        let photoURL = Endpoints.getPhotos.stringValue + "&lat=\(latitude)" + "&lon=\(longitude)" + "&page=\(pages)"
         
-        taskForGETRequest(url: URL(string: photoURLWithLocation)!, responseType: PhotoA.self) { response, error in
+        taskForGETRequest(url: URL(string: photoURL)!, responseType: PhotoA.self) { response, error in
             if let response = response {
                 print("successfully decoded photos")
                 completion(response, nil)
