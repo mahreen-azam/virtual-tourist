@@ -32,10 +32,14 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" title="Virtual Tourist" id="hsU-kO-gZ3">
-                        <barButtonItem key="rightBarButtonItem" title="Edit" id="xxG-T2-mUN"/>
+                        <barButtonItem key="rightBarButtonItem" title="Edit" id="xxG-T2-mUN">
+                            <connections>
+                                <action selector="tapEditButton:" destination="BYZ-38-t0r" id="FHB-td-NMc"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="editButton" destination="xxG-T2-mUN" id="mDP-Rd-5GO"/>
+                        <outlet property="editButton" destination="xxG-T2-mUN" id="AlF-oV-Fhp"/>
                         <outlet property="mapView" destination="qZa-Df-axR" id="KL1-08-8yn"/>
                         <segue destination="lSw-h6-GdI" kind="show" identifier="showPhotoAlbumView" id="5Mn-S8-p1V"/>
                     </connections>

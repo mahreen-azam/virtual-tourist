@@ -27,6 +27,7 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     var imageArray: [UIImage] = []
     var totalPages: Int = 1
     var pageNumber: Int = 1
+   // var isPhotoSelected: [Bool] = [false]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -90,6 +91,7 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
         for dataEntries in photoData {
             let url = URL(string: "https://farm\(dataEntries.farm).staticflickr.com/\(dataEntries.server)/\(dataEntries.id)_\(dataEntries.secret).jpg")
             let data = try? Data(contentsOf: url!)
+            // Add a gaurd for nil data or ?? if optional
             let image = (UIImage(data: data!)!)
             
            imageArray.append(image)
@@ -100,16 +102,22 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     //MARK: Button Action Functions
     @IBAction func tapToolBarButton(_ sender: Any) {
         //Disable button when images are loading
-        // Set an if statement to check if this button is in "New collection" mode or "remove photos" mode
-        print("New collection tapped")
+       
+         print("New collection tapped")
         
-        if totalPages > pageNumber {
-            pageNumber = pageNumber + 1
-            loadCollectionViewData()
+        if toolBarButton.currentTitle == "New Collection" {
+             print("if New Collection")
+            
+            if totalPages > pageNumber {
+                pageNumber = pageNumber + 1
+                loadCollectionViewData()
+            } else {
+                print("There are no more photos in this collection") // Pop an error onto the screen
+            }
         } else {
-            print("There are no more photos in this collection") // Pop an error onto the screen
+            print("if Remove Photos")
+            // Update this to call method to remove photos
         }
-        
     }
 }
 
@@ -144,8 +152,14 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self.toolBarButton.setTitle("Remove Selected Images", for: []) 
+        self.toolBarButton.setTitle("Remove Selected Images", for: [])
     
+        //Question: I want to select photos and then delete them if I tap delete. If I unselect them, I do not want to delete them. I wanted to use a property observer flag to look at them, but how do I do that for a collection view? Would it be an array of Bools?
+        
+        //Original logic: isPhotoSelected: Bool = false - > set to false
+        // in didSelect: isPhotoSelected= isPhotoSelected!
+        // if isPhotoSelected = true: remove it from the photo array, if isPhotoSelected false, add it to the array, if not set, do nothing
+        //when remove photo button was pressed, reload coolection view data 
     }
 }
 

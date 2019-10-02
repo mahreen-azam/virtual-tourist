@@ -11,9 +11,12 @@ import MapKit
 
 class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
 
+    //MARK: Outlets
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var editButton: UIBarButtonItem!
     
+    //MARK: Global Variables
+    var isEditTapped:Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +39,25 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
         longPress.addTarget(self, action: #selector(recognizeLongPress(_:)))
         mapView.addGestureRecognizer(longPress)
     }
+    
+    @IBAction func tapEditButton(_ sender: Any) {
+        print("Edit Tapped")
+        
+        if isEditTapped == false {
+            //update Edit to say Done
+            //update flag for is edit to be true
+            //move vc up and have Tap Pins to Delete tool bar (?) displayed
+            //remove annotations when tapped
+        }
+        if isEditTapped == true {
+            //update Done to say Edit
+            //update flag for is edit to be false
+            //move vc down and hide Tap Pins to Delete tool bar (?)
+            //go to next vc when annotations tapped -> will need to update map annotations selected method to check for this flag
+        }
+        
+    }
+    
     
     @objc private func recognizeLongPress(_ sender: UILongPressGestureRecognizer) {
     
