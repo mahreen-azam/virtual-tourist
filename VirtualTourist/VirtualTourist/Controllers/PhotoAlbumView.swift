@@ -25,6 +25,7 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     var centerCoordinate: CLLocationCoordinate2D!
     var photoData:[PhotoC] = []
     var imageArray: [UIImage] = []
+    var totalPages: Int = 1
     var pageNumber: Int = 1
 
     override func viewDidLoad() {
@@ -39,18 +40,7 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
         }
         
         createPin(centerCoordinate: centerCoordinate)
-        
-        reloadCollectionViewData()
-        
-//        getPhotoData { result in
-//            guard case .success(let photoDataResponse) = result else {
-//                print("Failed to retrieve photos")
-//                //self.showDataRetrievalFailure(message: "Failure to retrieve location data")
-//                return
-//            }
-//        self.imageArray = self.convertPhotoResponseIntoImages()
-//        self.photoAlbumView.reloadData()
-//        }
+        loadCollectionViewData()
     }
     
     //Mark: Functions for setting up the Map view
@@ -65,7 +55,19 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
             self.mapView.setRegion(mapArea, animated: true)
         }
     }
-    //MARK: Functions for getting and converting photo data
+    //MARK: Functions for getting, converting, and laoding photo data
+    func loadCollectionViewData() {
+        getPhotoData { result in
+            guard case .success(let photoDataResponse) = result else {
+                print("Failed to retrieve photos")
+                //self.showDataRetrievalFailure(message: "Failure to retrieve location data")
+                return
+            }
+            self.imageArray = self.convertPhotoResponseIntoImages()
+            self.photoAlbumView.reloadData()
+        }
+    }
+    
     func getPhotoData(completion: @escaping (Result<PhotoA?>) -> Void) {
         FlickerClient.getPhotos(latitude: self.centerCoordinate.latitude, longitude: self.centerCoordinate.longitude, pages: self.pageNumber) { photoDataResponse, error in
             DispatchQueue.main.async {
@@ -74,9 +76,9 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
                      completion(.failure(error))
                 } else {
                     self.photoData = photoDataResponse?.photos.photo ?? []
+                    self.totalPages = photoDataResponse?.photos.pages ?? 1
                     completion(.success(photoDataResponse))
                     print("success?")
-                  //  print(photoDataResponse?.photos.photo)
                 }
             }
         }
@@ -95,28 +97,20 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
         return imageArray
     }
     
+    //MARK: Button Action Functions
     @IBAction func tapToolBarButton(_ sender: Any) {
-        // Create a global variable that tracks which "page" you are on
-        //Increment the page number and send it in the photo request
         //Disable button when images are loading
         // Set an if statement to check if this button is in "New collection" mode or "remove photos" mode
         print("New collection tapped")
-        pageNumber = pageNumber + 1 // save the max page number and then compare page number to max page number, if they are equal, display "no more photos" 
-        reloadCollectionViewData()
-    }
-    
-    func reloadCollectionViewData() {
-        getPhotoData { result in
-            guard case .success(let photoDataResponse) = result else {
-                print("Failed to retrieve photos")
-                //self.showDataRetrievalFailure(message: "Failure to retrieve location data")
-                return
-            }
-            self.imageArray = self.convertPhotoResponseIntoImages()
-            self.photoAlbumView.reloadData()
+        
+        if totalPages > pageNumber {
+            pageNumber = pageNumber + 1
+            loadCollectionViewData()
+        } else {
+            print("There are no more photos in this collection") // Pop an error onto the screen
         }
+        
     }
-    
 }
 
 //MARK: UICollectionViewDelegate
@@ -150,9 +144,8 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self.toolBarButton.setTitle("Remove Selected Images", for: []) // Update size of text and spacing to make it fit maybe call a function that does this
+        self.toolBarButton.setTitle("Remove Selected Images", for: []) 
     
-        //collectionView.reloadData()
     }
 }
 

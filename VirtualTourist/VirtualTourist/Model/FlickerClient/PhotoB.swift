@@ -9,6 +9,7 @@
 import Foundation
 
 struct PhotoB: Codable {
+    let pages: Int
     let photo: [PhotoC]
 }
 

@@ -87,10 +87,9 @@
                                 <rect key="frame" x="0.0" y="623" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <items>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="c4K-rg-Zmp"/>
                                     <barButtonItem style="plain" id="O6g-YE-htd">
                                         <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="8gE-bo-1Ly">
-                                            <rect key="frame" x="109" y="1.5" width="157" height="41"/>
+                                            <rect key="frame" x="16" y="1.5" width="343" height="41"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" weight="medium" pointSize="23"/>
                                             <state key="normal" title="New Collection"/>
@@ -99,7 +98,6 @@
                                             </connections>
                                         </button>
                                     </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="3Jh-2b-DEV"/>
                                 </items>
                             </toolbar>
                         </subviews>
