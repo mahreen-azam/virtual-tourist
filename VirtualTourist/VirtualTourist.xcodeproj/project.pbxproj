@@ -19,6 +19,7 @@
 		BAF3D251233C70DC008B6187 /* PhotoA.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF3D250233C70DC008B6187 /* PhotoA.swift */; };
 		BAF3D253233C75D2008B6187 /* PhotoB.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF3D252233C75D2008B6187 /* PhotoB.swift */; };
 		BAF3D255233C7628008B6187 /* PhotoC.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF3D254233C7628008B6187 /* PhotoC.swift */; };
+		BAF3D2572345192B008B6187 /* FlickerImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF3D2562345192B008B6187 /* FlickerImageCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		BAF3D250233C70DC008B6187 /* PhotoA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoA.swift; sourceTree = "<group>"; };
 		BAF3D252233C75D2008B6187 /* PhotoB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoB.swift; sourceTree = "<group>"; };
 		BAF3D254233C7628008B6187 /* PhotoC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoC.swift; sourceTree = "<group>"; };
+		BAF3D2562345192B008B6187 /* FlickerImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickerImageCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 		BA8FAE022325A3830032A8E3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				BAF3D2562345192B008B6187 /* FlickerImageCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -204,6 +207,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BAF3D2572345192B008B6187 /* FlickerImageCell.swift in Sources */,
 				BAF3D255233C7628008B6187 /* PhotoC.swift in Sources */,
 				BAF3D253233C75D2008B6187 /* PhotoB.swift in Sources */,
 				BAF3D251233C70DC008B6187 /* PhotoA.swift in Sources */,

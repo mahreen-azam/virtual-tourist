@@ -27,6 +27,7 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     var imageArray: [UIImage] = []
     var totalPages: Int = 1
     var pageNumber: Int = 1
+    private var selectedIndices = [IndexPath]()
    // var isPhotoSelected: [Bool] = [false]
 
     override func viewDidLoad() {
@@ -134,32 +135,45 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FlickerImageCell", for: indexPath)
-        
-        // Code for creating an image view and setting the image for each cell
-        var imageView: UIImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 115, height: 115))
-        cell.contentView.addSubview(imageView)
-        imageView.image = UIImage(named: "VirtualTourist_120") //Change this to placeholder image
-        // Add loading indicator?
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FlickerImageCell", for: indexPath) as! FlickerImageCell
+//
+//        // Code for creating an image view and setting the image for each cell
+//        var imageView: UIImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 115, height: 115))
+//        cell.contentView.addSubview(imageView)
+//        imageView.image = UIImage(named: "VirtualTourist_120") //Change this to placeholder image
+//        // Add loading indicator?
         
         if photoData.count > 0 {
-            DispatchQueue.main.async {
-                imageView.image = self.imageArray[indexPath.row]
+            DispatchQueue.main.async { // Remove main queue?
+                cell.ImageView?.image = self.imageArray[indexPath.row]
             }
         }
+        
+        cell.setSelected(isSelected: selectedIndices.contains(indexPath))
         
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self.toolBarButton.setTitle("Remove Selected Images", for: [])
     
-        //Question: I want to select photos and then delete them if I tap delete. If I unselect them, I do not want to delete them. I wanted to use a property observer flag to look at them, but how do I do that for a collection view? Would it be an array of Bools?
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selected = selectedIndices.contains(indexPath)
         
-        //Original logic: isPhotoSelected: Bool = false - > set to false
-        // in didSelect: isPhotoSelected= isPhotoSelected!
-        // if isPhotoSelected = true: remove it from the photo array, if isPhotoSelected false, add it to the array, if not set, do nothing
-        //when remove photo button was pressed, reload coolection view data 
+        if !selected {
+            selectedIndices.append(indexPath)
+            self.toolBarButton.setTitle("Remove Selected Images", for: [])
+            print("added to array")
+        } else {
+            selectedIndices.removeAll(where: { $0 == indexPath })
+            if selectedIndices == [] {
+                self.toolBarButton.setTitle("New Collection", for: [])
+            }
+            print("removed from array")
+        }
+        
+        collectionView.reloadItems(at: [indexPath])
+    
+
+        //when remove photo button is pressed, delete photos at the indexpath.row from the selecedIndicies array and then reload coolection view data 
     }
 }
 
