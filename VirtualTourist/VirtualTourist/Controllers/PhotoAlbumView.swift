@@ -103,11 +103,9 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     //MARK: Button Action Functions
     @IBAction func tapToolBarButton(_ sender: Any) {
         //Disable button when images are loading
-       
-         print("New collection tapped")
         
         if toolBarButton.currentTitle == "New Collection" {
-             print("if New Collection")
+             print("New Collection")
             
             if totalPages > pageNumber {
                 pageNumber = pageNumber + 1
@@ -115,9 +113,17 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
             } else {
                 print("There are no more photos in this collection") // Pop an error onto the screen
             }
+            
         } else {
-            print("if Remove Photos")
-            // Update this to call method to remove photos
+            print("Remove Photos")
+            print(selectedIndices)
+            
+            for x in selectedIndices {
+                imageArray.remove(at: x.row)
+            }
+            selectedIndices.removeAll()
+            
+            photoAlbumView.reloadData()
         }
     }
 }
@@ -127,8 +133,8 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        if photoData.count > 0 {
-            return photoData.count
+        if imageArray.count > 0 {
+            return imageArray.count
         } else {
             return 15
         }
@@ -143,7 +149,7 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
 //        imageView.image = UIImage(named: "VirtualTourist_120") //Change this to placeholder image
 //        // Add loading indicator?
         
-        if photoData.count > 0 {
+        if imageArray.count > 0 {
             DispatchQueue.main.async { // Remove main queue?
                 cell.ImageView?.image = self.imageArray[indexPath.row]
             }
@@ -171,9 +177,7 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
         }
         
         collectionView.reloadItems(at: [indexPath])
-    
 
-        //when remove photo button is pressed, delete photos at the indexpath.row from the selecedIndicies array and then reload coolection view data 
     }
 }
 
