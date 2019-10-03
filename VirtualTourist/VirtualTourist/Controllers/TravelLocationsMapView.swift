@@ -18,7 +18,7 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
     //MARK: Global Variables
     var isEditTapped:Bool = false
     
-    override func viewDidLoad() {
+    override func viewDidLoad() { 
         super.viewDidLoad()
         
         mapView.delegate = self
@@ -49,7 +49,6 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
             isEditTapped = true
             
             //move vc up and have Tap Pins to Delete tool bar (?) displayed
-            //remove annotations when tapped
         }
         else if isEditTapped == true {
             print("Done Tapped")
@@ -111,11 +110,11 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         
         if self.isEditTapped {
-            //mapView.removeAnnotation(mapView.annotations as! MKAnnotation)
             mapView.removeAnnotation(view.annotation!)
         } else {
             let pin = view.annotation?.coordinate
             performSegue(withIdentifier: "showPhotoAlbumView", sender: pin)
+            mapView.deselectAnnotation(view.annotation, animated: true)
         }
     }
     

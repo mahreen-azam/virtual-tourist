@@ -21,6 +21,7 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var photoAlbumView: UICollectionView!
     @IBOutlet weak var toolBarButton: UIButton!
     
+    
     // MARK: Global Variables
     var centerCoordinate: CLLocationCoordinate2D!
     var photoData:[PhotoC] = []
@@ -28,7 +29,7 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     var totalPages: Int = 1
     var pageNumber: Int = 1
     private var selectedIndices = [IndexPath]()
-   // var isPhotoSelected: [Bool] = [false]
+    var displayActivityIndicator: Bool = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,6 +60,8 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     }
     //MARK: Functions for getting, converting, and laoding photo data
     func loadCollectionViewData() {
+        toolBarButton.isEnabled = false
+        
         getPhotoData { result in
             guard case .success(let photoDataResponse) = result else {
                 print("Failed to retrieve photos")
@@ -67,6 +70,7 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
             }
             self.imageArray = self.convertPhotoResponseIntoImages()
             self.photoAlbumView.reloadData()
+            self.toolBarButton.isEnabled = true
         }
     }
     
@@ -91,19 +95,19 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
         
         for dataEntries in photoData {
             let url = URL(string: "https://farm\(dataEntries.farm).staticflickr.com/\(dataEntries.server)/\(dataEntries.id)_\(dataEntries.secret).jpg")
-            let data = try? Data(contentsOf: url!)
-            // Add a gaurd for nil data or ?? if optional
-            let image = (UIImage(data: data!)!)
+            let data = try? Data(contentsOf: url!)   // Add a gaurd for nil data or ?? if optional
             
-           imageArray.append(image)
+            if let image = try? (UIImage(data: data!)!) {
+                imageArray.append(image)
+            } else {
+                print("No image data")
+            }
         }
         return imageArray
     }
     
     //MARK: Button Action Functions
     @IBAction func tapToolBarButton(_ sender: Any) {
-        //Disable button when images are loading
-        
         if toolBarButton.currentTitle == "New Collection" {
              print("New Collection")
             
@@ -174,19 +178,5 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
 
     }
 }
-
-////MARK: UICollectionViewDataSource
-//extension PhotoAlbumView: UICollectionViewDataSource {
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//
-//    }
-//}
-
-////MARK: UICollectionViewDelegateFlowLayout
-//extension PhotoAlbumView: UICollectionViewDelegateFlowLayout {
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        return collectionView.frame.size
-//    }
-//}
 
 

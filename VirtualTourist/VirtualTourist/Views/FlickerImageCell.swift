@@ -10,6 +10,7 @@ import UIKit
 
 public class FlickerImageCell: UICollectionViewCell {
     @IBOutlet var ImageView: UIImageView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     func setSelected(isSelected: Bool) {
         ImageView.alpha = isSelected ? 0.3 : 1.0
