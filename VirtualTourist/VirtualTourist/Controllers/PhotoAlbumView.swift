@@ -142,12 +142,6 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FlickerImageCell", for: indexPath) as! FlickerImageCell
-//
-//        // Code for creating an image view and setting the image for each cell
-//        var imageView: UIImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 115, height: 115))
-//        cell.contentView.addSubview(imageView)
-//        imageView.image = UIImage(named: "VirtualTourist_120") //Change this to placeholder image
-//        // Add loading indicator?
         
         if imageArray.count > 0 {
             DispatchQueue.main.async { // Remove main queue?
