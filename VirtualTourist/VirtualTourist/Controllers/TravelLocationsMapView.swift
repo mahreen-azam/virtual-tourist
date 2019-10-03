@@ -41,21 +41,25 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
     }
     
     @IBAction func tapEditButton(_ sender: Any) {
-        print("Edit Tapped")
         
         if isEditTapped == false {
-            //update Edit to say Done
-            //update flag for is edit to be true
+            print("Edit Tapped")
+            
+            editButton.title = "Done"
+            isEditTapped = true
+            
             //move vc up and have Tap Pins to Delete tool bar (?) displayed
             //remove annotations when tapped
         }
-        if isEditTapped == true {
-            //update Done to say Edit
-            //update flag for is edit to be false
+        else if isEditTapped == true {
+            print("Done Tapped")
+            
+            editButton.title = "Edit"
+            isEditTapped = false
+       
             //move vc down and hide Tap Pins to Delete tool bar (?)
             //go to next vc when annotations tapped -> will need to update map annotations selected method to check for this flag
         }
-        
     }
     
     
@@ -105,8 +109,14 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        let pin = view.annotation?.coordinate
-        performSegue(withIdentifier: "showPhotoAlbumView", sender: pin)
+        
+        if self.isEditTapped {
+            //mapView.removeAnnotation(mapView.annotations as! MKAnnotation)
+            mapView.removeAnnotation(view.annotation!)
+        } else {
+            let pin = view.annotation?.coordinate
+            performSegue(withIdentifier: "showPhotoAlbumView", sender: pin)
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
