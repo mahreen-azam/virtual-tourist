@@ -21,7 +21,6 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var photoAlbumView: UICollectionView!
     @IBOutlet weak var toolBarButton: UIButton!
     
-    
     // MARK: Global Variables
     var centerCoordinate: CLLocationCoordinate2D!
     var photoData:[PhotoC] = []
@@ -31,14 +30,14 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     private var selectedIndices = [IndexPath]()
     var displayActivityIndicator: Bool = false
 
+    // MARK: View Functions
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
         
         guard centerCoordinate != nil else {
             self.dismiss(animated: true, completion: nil)
-            //self.showFailure(title: "Failed to Find Location", message: "Please try again with a valid location")
-            print("Failed to get coordinate")
+            self.showErrorAlert(title: "Data Error", message: "Could not get map coordinate")
             return
         }
         
@@ -64,8 +63,7 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
         
         getPhotoData { result in
             guard case .success(let photoDataResponse) = result else {
-                print("Failed to retrieve photos")
-                //self.showDataRetrievalFailure(message: "Failure to retrieve location data")
+                self.showErrorAlert(title: "Data Error", message: "Failure to retrieve photo data")
                 return
             }
             self.imageArray = self.convertPhotoResponseIntoImages()
@@ -78,7 +76,7 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
         FlickerClient.getPhotos(latitude: self.centerCoordinate.latitude, longitude: self.centerCoordinate.longitude, pages: self.pageNumber) { photoDataResponse, error in
             DispatchQueue.main.async {
                 if let error = error {
-                    print(error.localizedDescription)
+                    self.showErrorAlert(title: "Data Error", message: "Failure to retrieve photo data")
                      completion(.failure(error))
                 } else {
                     self.photoData = photoDataResponse?.photos.photo ?? []
@@ -95,12 +93,11 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
         
         for dataEntries in photoData {
             let url = URL(string: "https://farm\(dataEntries.farm).staticflickr.com/\(dataEntries.server)/\(dataEntries.id)_\(dataEntries.secret).jpg")
-            let data = try? Data(contentsOf: url!)   // Add a gaurd for nil data or ?? if optional
-            
+            let data = try? Data(contentsOf: url!)
             if let image = try? (UIImage(data: data!)!) {
                 imageArray.append(image)
             } else {
-                print("No image data")
+                self.showErrorAlert(title: "Data Error", message: "There are no images in data")
             }
         }
         return imageArray
@@ -109,19 +106,13 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     //MARK: Button Action Functions
     @IBAction func tapToolBarButton(_ sender: Any) {
         if toolBarButton.currentTitle == "New Collection" {
-             print("New Collection")
-            
             if totalPages > pageNumber {
                 pageNumber = pageNumber + 1
                 loadCollectionViewData()
             } else {
-                print("There are no more photos in this collection") // Pop an error onto the screen
+                self.showErrorAlert(title: "No More Photos", message: "There are no more photos in this collection")
             }
-            
         } else {
-            print("Remove Photos")
-            print(selectedIndices)
-            
             for x in selectedIndices {
                 imageArray.remove(at: x.row)
             }
@@ -129,6 +120,13 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
             
             photoAlbumView.reloadData()
         }
+    }
+    
+    // MARK: Error Handling Functions
+    func showErrorAlert(title: String, message: String) {
+        let alertVC = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertVC.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alertVC, animated: true)
     }
 }
 
@@ -148,16 +146,14 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FlickerImageCell", for: indexPath) as! FlickerImageCell
         
         if imageArray.count > 0 {
-            DispatchQueue.main.async { // Remove main queue?
+            DispatchQueue.main.async {
                 cell.ImageView?.image = self.imageArray[indexPath.row]
             }
         }
         
         cell.setSelected(isSelected: selectedIndices.contains(indexPath))
-        
         return cell
     }
-    
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selected = selectedIndices.contains(indexPath)
@@ -175,7 +171,6 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
         }
         
         collectionView.reloadItems(at: [indexPath])
-
     }
 }
 
