@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 enum Result<T> {
     case success(T)
@@ -29,6 +30,11 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     var pageNumber: Int = 1
     private var selectedIndices = [IndexPath]()
     var displayActivityIndicator: Bool = false
+    
+    // Persistence Code
+    var pin: Pin! //This needs to be set in the previous view controller
+    var dataController: DataController!
+    var photosToBeImages: [Photo] = []
 
     // MARK: View Functions
     override func viewDidLoad() {
@@ -42,6 +48,20 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
         }
         
         createPin(centerCoordinate: centerCoordinate)
+        
+        
+        // Setting up data model for pins
+//        let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
+//        // Predicates allow us to filter the fetch request, %@ gets replaced by "pin" during run time
+//        let predicate = NSPredicate(format: "pin == %@", pin)
+//        fetchRequest.predicate = predicate
+//        // Add sort descriptors?
+//
+//        if let result = try? dataController.viewContext.fetch(fetchRequest) {
+//            photosToBeImages = result
+//        }
+//
+        
         loadCollectionViewData()
     }
     

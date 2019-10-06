@@ -23,13 +23,14 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
     // Persistence Code
     var dataController: DataController!
    // var fetchedResultsController:NSFetchedResultsController<Pin>!
+    var pinToSend: Pin!
     
     override func viewDidLoad() { 
         super.viewDidLoad()
         
         mapView.delegate = self
         
-//        // Setting up data model for pins
+        // Setting up data model for pins
         let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
         if let result = try? dataController.viewContext.fetch(fetchRequest) {
             pinArray = result
@@ -136,9 +137,24 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
             
             // Add code to delete from data model
             
-//            let pinToDelete = view.annotation as! Pin    Can't figure out how to reference the pinToDelete here**
-//            dataController.viewContext.delete(pinToDelete)
-//            try? dataController.viewContext.save()
+            var pin: Pin?
+            let latitude = Double((view.annotation?.coordinate.latitude)!)
+            let longitude = Double((view.annotation?.coordinate.longitude)!)
+            let predicate = NSPredicate(format: "latitude == %@ AND longitude == %@", latitude, longitude)
+            
+            let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
+            fetchRequest.predicate = predicate
+            if let result = try? dataController.viewContext.fetch(fetchRequest) {
+                pin = result[0]
+            }
+            
+           // let pinToDelete = view.annotation as! Pin    Can't figure out how to reference the pinToDelete here**
+            if let pin = pin {
+                dataController.viewContext.delete(pin)
+                try? dataController.viewContext.save()
+            }
+
+        
             
             mapView.removeAnnotation(view.annotation!)
             
@@ -153,6 +169,12 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
         if segue.identifier == "showPhotoAlbumView" {
             let photoAlbumVC = segue.destination as! PhotoAlbumView
             photoAlbumVC.centerCoordinate =  sender as? (CLLocationCoordinate2D)
+            photoAlbumVC.dataController = dataController
+            
+            
+        
+            
+            // photoAlbumVC.pin = pinArray[0] This needs to be the tapped pin ** 
         }
     }
 }
