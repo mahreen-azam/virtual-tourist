@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
 
@@ -17,11 +18,37 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
     
     //MARK: Global Variables
     var isEditTapped:Bool = false
+    var pinArray: [Pin] = []
+    
+    // Persistence Code
+    var dataController: DataController!
+   // var fetchedResultsController:NSFetchedResultsController<Pin>!
     
     override func viewDidLoad() { 
         super.viewDidLoad()
         
         mapView.delegate = self
+        
+//        // Setting up data model for pins
+        let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
+        if let result = try? dataController.viewContext.fetch(fetchRequest) {
+            pinArray = result
+        }
+        
+        var annotations = [MKPointAnnotation]()
+        
+        for dictionary in pinArray {
+            
+            let lat = CLLocationDegrees(dictionary.latitude)
+            let long = CLLocationDegrees(dictionary.longitude)
+            let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+            
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = coordinate
+            annotations.append(annotation)
+        }
+        
+        self.mapView.addAnnotations(annotations)
         
         if let didMapChange = UserDefaults.standard.value(forKey: "mapChanges") {
             if didMapChange as! Bool {
@@ -43,24 +70,14 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
     @IBAction func tapEditButton(_ sender: Any) {
         
         if isEditTapped == false {
-            print("Edit Tapped")
-            
             editButton.title = "Done"
             isEditTapped = true
-            
-            //move vc up and have Tap Pins to Delete tool bar (?) displayed
         }
         else if isEditTapped == true {
-            print("Done Tapped")
-            
             editButton.title = "Edit"
             isEditTapped = false
-       
-            //move vc down and hide Tap Pins to Delete tool bar (?)
-            //go to next vc when annotations tapped -> will need to update map annotations selected method to check for this flag
         }
     }
-    
     
     @objc private func recognizeLongPress(_ sender: UILongPressGestureRecognizer) {
     
@@ -78,6 +95,12 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
         
         mapView.addAnnotation(myPin)
         pinArray.append(myPin)
+        
+        // Add Pin to Data Model
+        let pin = Pin(context: dataController.viewContext)
+        pin.latitude = myCoordinate.latitude
+        pin.longitude = myCoordinate.longitude
+        try? dataController.viewContext.save()
     }
     
     // MARK: - MKMapViewDelegate
@@ -110,7 +133,15 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         
         if self.isEditTapped {
+            
+            // Add code to delete from data model
+            
+//            let pinToDelete = view.annotation as! Pin    Can't figure out how to reference the pinToDelete here**
+//            dataController.viewContext.delete(pinToDelete)
+//            try? dataController.viewContext.save()
+            
             mapView.removeAnnotation(view.annotation!)
+            
         } else {
             let pin = view.annotation?.coordinate
             performSegue(withIdentifier: "showPhotoAlbumView", sender: pin)
