@@ -25,6 +25,9 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
    // var fetchedResultsController:NSFetchedResultsController<Pin>!
     var pinToSend: Pin!
     
+    //Question: what is the value of sort descriptors if I don't care about the sort order? What do they really do?
+    
+    
     override func viewDidLoad() { 
         super.viewDidLoad()
         
@@ -138,27 +141,40 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
             // Add code to delete from data model
             
             var pin: Pin?
-            let latitude = Double((view.annotation?.coordinate.latitude)!)
-            let longitude = Double((view.annotation?.coordinate.longitude)!)
-            let predicate = NSPredicate(format: "latitude == %@ AND longitude == %@", latitude, longitude)
+//            let latitude = Double((view.annotation?.coordinate.latitude)!)
+//           // let longitude = Double((view.annotation?.coordinate.longitude)!)
+//            //AND longitude == %@
+//            let predicate = NSPredicate(format: "latitude == %@", latitude) // Why does this return no results? There are pins stored with this latitude (?) **
+//
+//            let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
+//            fetchRequest.predicate = predicate
+//            if let result = try? dataController.viewContext.fetch(fetchRequest) {
+//                pin = try? result[0]
+//            }
             
-            let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
-            fetchRequest.predicate = predicate
-            if let result = try? dataController.viewContext.fetch(fetchRequest) {
+            do {
+                let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
+                let latitude = Double((view.annotation?.coordinate.latitude)!)
+                let predicate = NSPredicate(format: "latitude == %@", latitude)
+                fetchRequest.predicate = predicate
+                let result = try dataController.viewContext.fetch(fetchRequest)
                 pin = result[0]
+                print("Pin successfully saved")
+            } catch {
+                print("Error saving selected pin")
             }
-            
+        
            // let pinToDelete = view.annotation as! Pin    Can't figure out how to reference the pinToDelete here**
             if let pin = pin {
                 dataController.viewContext.delete(pin)
                 try? dataController.viewContext.save()
             }
-
         
             
             mapView.removeAnnotation(view.annotation!)
             
         } else {
+            // Outside of this if statement, you should set the global "pin" to be the one that is tapped, then in the segue, you can pass over the correct pin
             let pin = view.annotation?.coordinate
             performSegue(withIdentifier: "showPhotoAlbumView", sender: pin)
             mapView.deselectAnnotation(view.annotation, animated: true)
@@ -171,9 +187,7 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
             photoAlbumVC.centerCoordinate =  sender as? (CLLocationCoordinate2D)
             photoAlbumVC.dataController = dataController
             
-            
-        
-            
+
             // photoAlbumVC.pin = pinArray[0] This needs to be the tapped pin ** 
         }
     }
