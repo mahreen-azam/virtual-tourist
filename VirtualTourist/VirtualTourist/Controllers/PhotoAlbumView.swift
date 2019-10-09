@@ -32,9 +32,9 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     var displayActivityIndicator: Bool = false
     
     // Persistence Code
-    var pin: Pin! //This needs to be set in the previous view controller
+    var pin: Pin!
     var dataController: DataController!
-    var photosToBeImages: [Photo] = []
+    var savedPhotos: [Photo] = []
 
     // MARK: View Functions
     override func viewDidLoad() {
@@ -52,17 +52,14 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
         // Questions: How do we get Photo, a binary type, to save the information saved from flicker? Do we still parse it like normal, convert to images, and then save it? What is a binary type even? 
         
         // Setting up data model for pins
-//        let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
-//        // Predicates allow us to filter the fetch request, %@ gets replaced by "pin" during run time
-//        let predicate = NSPredicate(format: "pin == %@", pin)
-//        fetchRequest.predicate = predicate
-//        // Add sort descriptors?
-//
-//        if let result = try? dataController.viewContext.fetch(fetchRequest) {
-//            photosToBeImages = result
-//        }
-//
-        
+        let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
+        var predicate: NSPredicate?
+        fetchRequest.predicate = predicate
+        predicate = NSPredicate(format: "pin == %@", pin)
+    
+        if let result = try? dataController.viewContext.fetch(fetchRequest) {
+            savedPhotos = result
+        }
         loadCollectionViewData()
     }
     
@@ -115,8 +112,16 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
         for dataEntries in photoData {
             let url = URL(string: "https://farm\(dataEntries.farm).staticflickr.com/\(dataEntries.server)/\(dataEntries.id)_\(dataEntries.secret).jpg")
             let data = try? Data(contentsOf: url!)
+            
+            //Persistent code
+            let photo = Photo(context: dataController.viewContext)
+            photo.image = data
+            photo.pin = self.pin
+            try? dataController.viewContext.save()
+            
             if let image = try? (UIImage(data: data!)!) {
                 imageArray.append(image)
+                
             } else {
                 self.showErrorAlert(title: "Data Error", message: "There are no images in data")
             }
@@ -158,6 +163,10 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
         
         if imageArray.count > 0 {
             return imageArray.count
+            
+        } else if savedPhotos.count > 0 {
+            return savedPhotos.count
+            
         } else {
             return 15
         }
@@ -169,6 +178,13 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
         if imageArray.count > 0 {
             DispatchQueue.main.async {
                 cell.ImageView?.image = self.imageArray[indexPath.row]
+            }
+          //  cell.ImageView?.image = self.imageArray[indexPath.row]
+            
+        } else if savedPhotos.count > 0 {
+            let image = UIImage(data: savedPhotos[indexPath.row].image!)
+            DispatchQueue.main.async {
+                cell.ImageView?.image = image
             }
         }
         
