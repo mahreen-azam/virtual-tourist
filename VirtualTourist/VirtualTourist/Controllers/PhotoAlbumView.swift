@@ -35,6 +35,7 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     var pin: Pin!
     var dataController: DataController!
     var savedPhotos: [Photo] = []
+    var fetchedResultsController:NSFetchedResultsController<Photo>!
 
     // MARK: View Functions
     override func viewDidLoad() {
@@ -49,17 +50,25 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
         
         createPin(centerCoordinate: centerCoordinate)
         
-        // Questions: How do we get Photo, a binary type, to save the information saved from flicker? Do we still parse it like normal, convert to images, and then save it? What is a binary type even? 
-        
-        // Setting up data model for pins
+        // Setting up data model for photos
         let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
         var predicate: NSPredicate?
         fetchRequest.predicate = predicate
         predicate = NSPredicate(format: "pin == %@", pin)
+        fetchRequest.sortDescriptors = []
+        
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            fatalError("The fetch could not be performed: \(error.localizedDescription)")
+        }
     
         if let result = try? dataController.viewContext.fetch(fetchRequest) {
             savedPhotos = result
         }
+        
         loadCollectionViewData()
     }
     
@@ -140,6 +149,12 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
             }
         } else {
             for x in selectedIndices {
+                
+                // convert indicies to Photos? and then delete them 
+                let photoToDelete = fetchedResultsController.object(at: x) // referenc to photo 
+                dataController.viewContext.delete(photoToDelete)
+                try? dataController.viewContext.save()
+                
                 imageArray.remove(at: x.row)
             }
             selectedIndices.removeAll()
@@ -179,7 +194,6 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
             DispatchQueue.main.async {
                 cell.ImageView?.image = self.imageArray[indexPath.row]
             }
-          //  cell.ImageView?.image = self.imageArray[indexPath.row]
             
         } else if savedPhotos.count > 0 {
             let image = UIImage(data: savedPhotos[indexPath.row].image!)
@@ -198,13 +212,11 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
         if !selected {
             selectedIndices.append(indexPath)
             self.toolBarButton.setTitle("Remove Selected Images", for: [])
-            print("added to array")
         } else {
             selectedIndices.removeAll(where: { $0 == indexPath })
             if selectedIndices == [] {
                 self.toolBarButton.setTitle("New Collection", for: [])
             }
-            print("removed from array")
         }
         
         collectionView.reloadItems(at: [indexPath])
