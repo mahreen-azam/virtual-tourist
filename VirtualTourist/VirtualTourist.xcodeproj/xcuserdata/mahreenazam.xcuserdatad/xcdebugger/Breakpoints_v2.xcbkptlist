@@ -9,72 +9,8 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "VirtualTourist/Controllers/TravelLocationsMapView.swift"
-            timestampString = "592265604.9727941"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "107"
-            endingLineNumber = "107"
-            landmarkName = "recognizeLongPress(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "VirtualTourist/Controllers/TravelLocationsMapView.swift"
-            timestampString = "592265604.973195"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "39"
-            endingLineNumber = "39"
-            landmarkName = "viewDidLoad()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "VirtualTourist/Controllers/TravelLocationsMapView.swift"
-            timestampString = "592265604.9734499"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "163"
-            endingLineNumber = "163"
-            landmarkName = "mapView(_:didSelect:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "VirtualTourist/Controllers/TravelLocationsMapView.swift"
-            timestampString = "592265604.973695"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "164"
-            endingLineNumber = "164"
-            landmarkName = "mapView(_:didSelect:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "VirtualTourist/Controllers/PhotoAlbumView.swift"
-            timestampString = "592265604.973922"
+            timestampString = "592282278.032001"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "35"
@@ -90,7 +26,7 @@
                   moduleName = "VirtualTourist"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/mahreenazam/Desktop/Dev/Udacity%20iOS%20Developer/Semester%202/virtual-tourist/VirtualTourist/VirtualTourist/Controllers/PhotoAlbumView.swift"
-                  timestampString = "592265605.155449"
+                  timestampString = "592282172.03175"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "35"
@@ -105,7 +41,7 @@
                   moduleName = "VirtualTourist"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/mahreenazam/Desktop/Dev/Udacity%20iOS%20Developer/Semester%202/virtual-tourist/VirtualTourist/VirtualTourist/Controllers/PhotoAlbumView.swift"
-                  timestampString = "592265605.157986"
+                  timestampString = "592282172.0334949"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "35"
@@ -120,7 +56,7 @@
                   moduleName = "VirtualTourist"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/mahreenazam/Desktop/Dev/Udacity%20iOS%20Developer/Semester%202/virtual-tourist/VirtualTourist/VirtualTourist/Controllers/PhotoAlbumView.swift"
-                  timestampString = "592265605.160274"
+                  timestampString = "592282172.035131"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "0"
@@ -135,7 +71,7 @@
                   moduleName = "VirtualTourist"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/mahreenazam/Desktop/Dev/Udacity%20iOS%20Developer/Semester%202/virtual-tourist/VirtualTourist/VirtualTourist/Controllers/PhotoAlbumView.swift"
-                  timestampString = "592265605.162709"
+                  timestampString = "592282172.036642"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "35"
@@ -150,7 +86,7 @@
                   moduleName = "VirtualTourist"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/mahreenazam/Desktop/Dev/Udacity%20iOS%20Developer/Semester%202/virtual-tourist/VirtualTourist/VirtualTourist/Controllers/PhotoAlbumView.swift"
-                  timestampString = "592265605.165091"
+                  timestampString = "592282172.03816"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "35"
@@ -165,7 +101,7 @@
                   moduleName = "VirtualTourist"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/mahreenazam/Desktop/Dev/Udacity%20iOS%20Developer/Semester%202/virtual-tourist/VirtualTourist/VirtualTourist/Controllers/PhotoAlbumView.swift"
-                  timestampString = "592265605.16775"
+                  timestampString = "592282172.039647"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "35"
@@ -173,22 +109,6 @@
                   offsetFromSymbolStart = "1222">
                </Location>
             </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "VirtualTourist/Controllers/TravelLocationsMapView.swift"
-            timestampString = "592265604.973972"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "209"
-            endingLineNumber = "209"
-            landmarkName = "prepare(for:sender:)"
-            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

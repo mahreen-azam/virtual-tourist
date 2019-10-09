@@ -11,7 +11,7 @@ import MapKit
 import CoreData
 
 class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
-
+    
     //MARK: Outlets
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var editButton: UIBarButtonItem!
@@ -19,14 +19,8 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
     //MARK: Global Variables
     var isEditTapped:Bool = false
     var pinArray: [Pin] = []
-    
-    // Persistence Code
     var dataController: DataController!
-   // var fetchedResultsController:NSFetchedResultsController<Pin>!
-    var pinToSend: Pin!
-    
-    //Question: what is the value of sort descriptors if I don't care about the sort order? What do they really do?
-    
+    var selectedPin: Pin!
     
     override func viewDidLoad() { 
         super.viewDidLoad()
@@ -54,10 +48,11 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
         
         self.mapView.addAnnotations(annotations)
         
+        // Setting up map view based on persistant changes
         if let didMapChange = UserDefaults.standard.value(forKey: "mapChanges") {
             if didMapChange as! Bool {
                 var updateMapView = UserDefaults.standard.value(forKey: "mapView") as! [Double]
-        
+                
                 let centerCoordinates = CLLocationCoordinate2DMake(updateMapView[0],updateMapView[1])
                 self.mapView.setRegion(MKCoordinateRegion(center: centerCoordinates, span: MKCoordinateSpan(latitudeDelta: updateMapView[2], longitudeDelta: updateMapView[3])), animated: true)
             }
@@ -84,7 +79,7 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
     }
     
     @objc private func recognizeLongPress(_ sender: UILongPressGestureRecognizer) {
-    
+        
         if sender.state != UIGestureRecognizer.State.began {
             return
         }
@@ -107,7 +102,7 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
         try? dataController.viewContext.save()
     }
     
-    // MARK: - MKMapViewDelegate
+    // MARK: MKMapViewDelegate
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
@@ -131,83 +126,55 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
         UserDefaults.standard.setValue(true, forKey: "mapChanges")
         
         let updateMapView = [Double(mapView.centerCoordinate.latitude), Double(mapView.centerCoordinate.longitude), Double(mapView.region.span.latitudeDelta), Double(mapView.region.span.longitudeDelta)]
-            UserDefaults.standard.setValue(updateMapView, forKey: "mapView")
+        UserDefaults.standard.setValue(updateMapView, forKey: "mapView")
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         
-        if self.isEditTapped {
+        // Saving selected annotation as a Pin
+        do {
+            let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
+            let latitude = Double((view.annotation?.coordinate.latitude)!)
+            let longitude = Double((view.annotation?.coordinate.longitude)!)
+            var predicate: NSPredicate?
+            fetchRequest.predicate = predicate
+            predicate = NSPredicate(format: "latitude == %@ AND longitude == %@", latitude, longitude)
             
-            // Add code to delete from data model
-            
-            var pin: Pin?
-//            let latitude = Double((view.annotation?.coordinate.latitude)!)
-//           // let longitude = Double((view.annotation?.coordinate.longitude)!)
-//            //AND longitude == %@
-//            let predicate = NSPredicate(format: "latitude == %@", latitude) // Why does this return no results? There are pins stored with this latitude (?) **
-//
-//            let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
-//            fetchRequest.predicate = predicate
-//            if let result = try? dataController.viewContext.fetch(fetchRequest) {
-//                pin = try? result[0]
-//            }
-            
-            do {
-                let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
-                let latitude = Double((view.annotation?.coordinate.latitude)!)
-                let longitude = Double((view.annotation?.coordinate.longitude)!)
-                var predicate: NSPredicate?
-                fetchRequest.predicate = predicate
-                predicate = NSPredicate(format: "latitude == %@ AND longitude == %@", latitude, longitude)
-                let result = try dataController.viewContext.fetch(fetchRequest)
-                pin = result[0]
-                pinToSend = result[0]
-                print("Pin successfully saved")
-            } catch {
-                print("Error saving selected pin")
-            }
+            let result = try dataController.viewContext.fetch(fetchRequest)
+            selectedPin = result[0]
+        } catch {
+            self.showErrorAlert(title: "Data Error", message: "Failed to find selected pin")
+        }
         
-           // let pinToDelete = view.annotation as! Pin    Can't figure out how to reference the pinToDelete here**
-            if let pin = pin {
-                dataController.viewContext.delete(pin)
+        if self.isEditTapped {
+            if let selectedPin = selectedPin {
+                dataController.viewContext.delete(selectedPin)
                 try? dataController.viewContext.save()
             }
             
             mapView.removeAnnotation(view.annotation!)
             
         } else {
-            // Outside of this if statement, you should set the global "pin" to be the one that is tapped, then in the segue, you can pass over the correct pin
-           // var pin2: Pin?
-            do {
-                let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
-                let latitude = Double((view.annotation?.coordinate.latitude)!)
-                let longitude = Double((view.annotation?.coordinate.longitude)!)
-                var predicate: NSPredicate?
-                fetchRequest.predicate = predicate
-                predicate = NSPredicate(format: "latitude == %@ AND longitude == %@", latitude, longitude)
-                let result = try dataController.viewContext.fetch(fetchRequest)
-               // pin2 = result[0]
-                pinToSend = result[0]
-                print("Pin successfully saved")
-            } catch {
-                print("Error saving selected pin")
-            }
-            
-            
-            
             let pin = view.annotation?.coordinate
             performSegue(withIdentifier: "showPhotoAlbumView", sender: pin)
             mapView.deselectAnnotation(view.annotation, animated: true)
         }
     }
     
+    //MARK: Helper Functions
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showPhotoAlbumView" {
             let photoAlbumVC = segue.destination as! PhotoAlbumView
             photoAlbumVC.centerCoordinate =  sender as? (CLLocationCoordinate2D)
             photoAlbumVC.dataController = dataController
-            photoAlbumVC.pin = pinToSend //This needs to be the tapped pin **
+            photoAlbumVC.pin = selectedPin
         }
+    }
+    
+    func showErrorAlert(title: String, message: String) {
+        let alertVC = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertVC.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alertVC, animated: true)
     }
 }
 
