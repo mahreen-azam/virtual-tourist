@@ -155,10 +155,13 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
             do {
                 let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
                 let latitude = Double((view.annotation?.coordinate.latitude)!)
-                let predicate = NSPredicate(format: "latitude == %@", latitude)
+                let longitude = Double((view.annotation?.coordinate.longitude)!)
+                var predicate: NSPredicate?
                 fetchRequest.predicate = predicate
+                predicate = NSPredicate(format: "latitude == %@ AND longitude == %@", latitude, longitude)
                 let result = try dataController.viewContext.fetch(fetchRequest)
                 pin = result[0]
+                pinToSend = result[0]
                 print("Pin successfully saved")
             } catch {
                 print("Error saving selected pin")
@@ -169,12 +172,29 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
                 dataController.viewContext.delete(pin)
                 try? dataController.viewContext.save()
             }
-        
             
             mapView.removeAnnotation(view.annotation!)
             
         } else {
             // Outside of this if statement, you should set the global "pin" to be the one that is tapped, then in the segue, you can pass over the correct pin
+           // var pin2: Pin?
+            do {
+                let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
+                let latitude = Double((view.annotation?.coordinate.latitude)!)
+                let longitude = Double((view.annotation?.coordinate.longitude)!)
+                var predicate: NSPredicate?
+                fetchRequest.predicate = predicate
+                predicate = NSPredicate(format: "latitude == %@ AND longitude == %@", latitude, longitude)
+                let result = try dataController.viewContext.fetch(fetchRequest)
+               // pin2 = result[0]
+                pinToSend = result[0]
+                print("Pin successfully saved")
+            } catch {
+                print("Error saving selected pin")
+            }
+            
+            
+            
             let pin = view.annotation?.coordinate
             performSegue(withIdentifier: "showPhotoAlbumView", sender: pin)
             mapView.deselectAnnotation(view.annotation, animated: true)
@@ -186,9 +206,7 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
             let photoAlbumVC = segue.destination as! PhotoAlbumView
             photoAlbumVC.centerCoordinate =  sender as? (CLLocationCoordinate2D)
             photoAlbumVC.dataController = dataController
-            
-
-            // photoAlbumVC.pin = pinArray[0] This needs to be the tapped pin ** 
+            photoAlbumVC.pin = pinToSend //This needs to be the tapped pin **
         }
     }
 }

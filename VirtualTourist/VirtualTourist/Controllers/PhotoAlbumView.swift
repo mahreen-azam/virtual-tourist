@@ -49,6 +49,7 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
         
         createPin(centerCoordinate: centerCoordinate)
         
+        // Questions: How do we get Photo, a binary type, to save the information saved from flicker? Do we still parse it like normal, convert to images, and then save it? What is a binary type even? 
         
         // Setting up data model for pins
 //        let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
