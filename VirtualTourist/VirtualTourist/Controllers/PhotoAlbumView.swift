@@ -28,7 +28,7 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     var imageArray: [UIImage] = []
     var totalPages: Int = 1
     var pageNumber: Int = 1
-    private var selectedIndices = [IndexPath]()
+    var selectedIndices = [IndexPath]()
     var displayActivityIndicator: Bool = false
     
     // Persistence Code
@@ -55,21 +55,21 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
         var predicate: NSPredicate?
         fetchRequest.predicate = predicate
         predicate = NSPredicate(format: "pin == %@", pin)
-        fetchRequest.sortDescriptors = []
+        //fetchRequest.sortDescriptors = []
         
-        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
-        
-        do {
-            try fetchedResultsController.performFetch()
-        } catch {
-            fatalError("The fetch could not be performed: \(error.localizedDescription)")
-        }
+//        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+//
+//        do {
+//            try fetchedResultsController.performFetch()
+//        } catch {
+//            fatalError("The fetch could not be performed: \(error.localizedDescription)")
+//        }
     
         if let result = try? dataController.viewContext.fetch(fetchRequest) {
             savedPhotos = result
         }
         
-        loadCollectionViewData()
+        loadCollectionViewData() // Only call this if there are no images in savedPhotos (?) 
     }
     
     //Mark: Functions for setting up the Map view
@@ -125,10 +125,11 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
             //Persistent code
             let photo = Photo(context: dataController.viewContext)
             photo.image = data
+            photo.id = dataEntries.id
             photo.pin = self.pin
             try? dataController.viewContext.save()
             
-            if let image = try? (UIImage(data: data!)!) {
+            if let image = try? (UIImage(data: data!)!) { // Look at this code and write it better
                 imageArray.append(image)
                 
             } else {
@@ -149,11 +150,49 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
             }
         } else {
             for x in selectedIndices {
+      
+                print(savedPhotos)
+                let imageId = savedPhotos[x.row].id
                 
-                // convert indicies to Photos? and then delete them 
-                let photoToDelete = fetchedResultsController.object(at: x) // referenc to photo 
-                dataController.viewContext.delete(photoToDelete)
-                try? dataController.viewContext.save()
+                if let imageId = imageId {
+                    let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
+                    var predicate: NSPredicate?
+                    fetchRequest.predicate = predicate
+                    predicate = NSPredicate(format: "pin == %@ AND id == %@", pin, imageId)
+                    
+                    let result = try? dataController.viewContext.fetch(fetchRequest)
+                    
+                    for photo in result! {
+                        dataController.viewContext.delete(photo)
+                        
+                        do {
+                            try dataController.viewContext.save()
+                        } catch let error {
+                            print(error.localizedDescription)
+                        }
+                    }
+                }
+                
+//                let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
+//                var predicate: NSPredicate?
+//                fetchRequest.predicate = predicate
+//                predicate = NSPredicate(format: "pin == %@ AND id == %@", pin, imageId!)
+//
+//                let result = try? dataController.viewContext.fetch(fetchRequest)
+//
+//                for photo in result! {
+//                    dataController.viewContext.delete(photo)
+//
+//                    do {
+//                        try dataController.viewContext.save()
+//                    } catch let error {
+//                        print(error.localizedDescription)
+//                    }
+//                }
+
+                
+                
+                
                 
                 imageArray.remove(at: x.row)
             }
