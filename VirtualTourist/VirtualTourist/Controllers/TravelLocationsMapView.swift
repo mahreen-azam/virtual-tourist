@@ -67,7 +67,6 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
     }
     
     @IBAction func tapEditButton(_ sender: Any) {
-        
         if isEditTapped == false {
             editButton.title = "Done"
             isEditTapped = true
@@ -79,7 +78,6 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
     }
     
     @objc private func recognizeLongPress(_ sender: UILongPressGestureRecognizer) {
-        
         if sender.state != UIGestureRecognizer.State.began {
             return
         }
@@ -103,9 +101,7 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
     }
     
     // MARK: MKMapViewDelegate
-    
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        
         let reuseId = "pin"
         
         var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
@@ -130,7 +126,6 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        
         // Saving selected annotation as a Pin
         do {
             let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()

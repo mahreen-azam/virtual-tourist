@@ -15,4 +15,12 @@ public class FlickerImageCell: UICollectionViewCell {
     func setSelected(isSelected: Bool) {
         ImageView.alpha = isSelected ? 0.3 : 1.0
     }
+    
+    func setActivityIndicator(isStopped: Bool) {
+        if isStopped == true {
+            activityIndicator.stopAnimating()
+        } else {
+            activityIndicator.startAnimating()
+        }
+    }
 }

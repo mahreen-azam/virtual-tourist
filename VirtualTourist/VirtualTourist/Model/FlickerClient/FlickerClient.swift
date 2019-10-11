@@ -53,7 +53,6 @@ class FlickerClient {
         
         taskForGETRequest(url: URL(string: photoURL)!, responseType: PhotoA.self) { response, error in
             if let response = response {
-                print("successfully decoded photos")
                 completion(response, nil)
             } else {
                 completion(nil, error)
