@@ -29,13 +29,9 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
     var totalPages: Int = 1
     var pageNumber: Int = 1
     var selectedIndices = [IndexPath]()
-    var displayActivityIndicator: Bool = false
-    
-    // Persistence Code
     var pin: Pin!
     var dataController: DataController!
     var savedPhotos: [Photo] = []
-    var fetchedResultsController:NSFetchedResultsController<Photo>!
 
     // MARK: View Functions
     override func viewDidLoad() {
@@ -52,24 +48,30 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
         
         // Setting up data model for photos
         let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
-        var predicate: NSPredicate?
+       // var predicate: NSPredicate?
+        let predicate: NSPredicate = NSPredicate(format: "pin == %@ AND id != nil", pin)
         fetchRequest.predicate = predicate
-        predicate = NSPredicate(format: "pin == %@", pin)
-        //fetchRequest.sortDescriptors = []
+//        let predicate = NSPredicate(format: "pin == %@ AND id != nil", pin)
         
-//        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
-//
-//        do {
-//            try fetchedResultsController.performFetch()
-//        } catch {
-//            fatalError("The fetch could not be performed: \(error.localizedDescription)")
-//        }
-    
         if let result = try? dataController.viewContext.fetch(fetchRequest) {
             savedPhotos = result
         }
         
-        loadCollectionViewData() // Only call this if there are no images in savedPhotos (?) 
+        if savedPhotos == [] {
+             loadCollectionViewData()
+            
+        } else {
+            getPhotoData { result in
+                guard case .success(let photoDataResponse) = result else {
+                    self.showErrorAlert(title: "Data Error", message: "Failure to retrieve photo data")
+                    return
+                }
+            }
+        }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        savedPhotos.removeAll()
     }
     
     //Mark: Functions for setting up the Map view
@@ -122,12 +124,14 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
             let url = URL(string: "https://farm\(dataEntries.farm).staticflickr.com/\(dataEntries.server)/\(dataEntries.id)_\(dataEntries.secret).jpg")
             let data = try? Data(contentsOf: url!)
             
-            //Persistent code
+            // Saving photos to code data
             let photo = Photo(context: dataController.viewContext)
             photo.image = data
             photo.id = dataEntries.id
             photo.pin = self.pin
             try? dataController.viewContext.save()
+            
+            savedPhotos.append(photo)
             
             if let image = try? (UIImage(data: data!)!) { // Look at this code and write it better
                 imageArray.append(image)
@@ -139,65 +143,105 @@ class PhotoAlbumView: UIViewController, MKMapViewDelegate {
         return imageArray
     }
     
+    func deleteSavedPhotos() {
+        let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
+        var predicate: NSPredicate?
+        fetchRequest.predicate = predicate
+        predicate = NSPredicate(format: "pin == %@", pin)
+        
+        let result = try? dataController.viewContext.fetch(fetchRequest)
+        
+        for photo in result! {
+            dataController.viewContext.delete(photo)
+            try? dataController.viewContext.save()
+        }
+        
+        savedPhotos.removeAll()
+    }
+    
     //MARK: Button Action Functions
     @IBAction func tapToolBarButton(_ sender: Any) {
         if toolBarButton.currentTitle == "New Collection" {
             if totalPages > pageNumber {
                 pageNumber = pageNumber + 1
+                // Empty core data, and saved Photos
+                deleteSavedPhotos()
                 loadCollectionViewData()
             } else {
                 self.showErrorAlert(title: "No More Photos", message: "There are no more photos in this collection")
             }
         } else {
-            for x in selectedIndices {
+            for selectedPhoto in selectedIndices {
       
-                print(savedPhotos)
-                let imageId = savedPhotos[x.row].id
+                // Deleting images from core data
                 
-                if let imageId = imageId {
-                    let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
-                    var predicate: NSPredicate?
-                    fetchRequest.predicate = predicate
-                    predicate = NSPredicate(format: "pin == %@ AND id == %@", pin, imageId)
+                if savedPhotos != [] {
+                    let imageId = savedPhotos[selectedPhoto.row].id
                     
-                    let result = try? dataController.viewContext.fetch(fetchRequest)
-                    
-                    for photo in result! {
-                        dataController.viewContext.delete(photo)
+                    if imageId != nil {
+                        let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
+                        var predicate: NSPredicate?
+                        fetchRequest.predicate = predicate
+                        predicate = NSPredicate(format: "pin == %@ AND id == %@", pin, imageId!)
                         
-                        do {
-                            try dataController.viewContext.save()
-                        } catch let error {
-                            print(error.localizedDescription)
+                        let result = try? dataController.viewContext.fetch(fetchRequest)
+                        
+//                        if imageArray == [] {
+//                            for photo in savedPhotos {
+//                                if let photoToAddToImageArray =  UIImage(data: photo.image!) {
+//                                    self.imageArray.append(photoToAddToImageArray)
+//                                }
+//                            }
+//                        }
+//
+                        for photo in result! {
+                            dataController.viewContext.delete(photo)
+                            
+                            do {
+                                try dataController.viewContext.save()
+                            } catch let error {
+                                print(error.localizedDescription)
+                            }
                         }
                     }
+                   savedPhotos.remove(at: selectedPhoto.row)
                 }
-                
-//                let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
-//                var predicate: NSPredicate?
-//                fetchRequest.predicate = predicate
-//                predicate = NSPredicate(format: "pin == %@ AND id == %@", pin, imageId!)
-//
-//                let result = try? dataController.viewContext.fetch(fetchRequest)
-//
-//                for photo in result! {
-//                    dataController.viewContext.delete(photo)
-//
-//                    do {
-//                        try dataController.viewContext.save()
-//                    } catch let error {
-//                        print(error.localizedDescription)
-//                    }
+//                guard let imageId = savedPhotos[selectedPhoto.row].id else {
+//                    self.showErrorAlert(title: "Failed to Delete Photo", message: "There was an error trying to delete the photo")
+//                    return
 //                }
 
-                
-                
-                
-                
-                imageArray.remove(at: x.row)
+//                    let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
+//                    var predicate: NSPredicate?
+//                    fetchRequest.predicate = predicate
+//                    predicate = NSPredicate(format: "pin == %@ AND id == %@", pin, imageId)
+//
+//                    let result = try? dataController.viewContext.fetch(fetchRequest)
+//
+//                    if imageArray == [] {
+//                        for photo in savedPhotos {
+//                            if let photoToAddToImageArray =  UIImage(data: photo.image!) {
+//                                self.imageArray.append(photoToAddToImageArray)
+//                            }
+//                        }
+//                    }
+
+//                    for photo in result! {
+//                        dataController.viewContext.delete(photo)
+//
+//                        do {
+//                            try dataController.viewContext.save()
+//                        } catch let error {
+//                            print(error.localizedDescription)
+//                        }
+//                    }
+
+               // imageArray.remove(at: selectedPhoto.row)
+            
             }
             selectedIndices.removeAll()
             
+            self.toolBarButton.setTitle("New Collection", for: [])
             photoAlbumView.reloadData()
         }
     }
@@ -215,10 +259,11 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        if imageArray.count > 0 {
-            return imageArray.count
-            
-        } else if savedPhotos.count > 0 {
+//        if imageArray.count > 0 {
+//            return imageArray.count //we don't need this
+//
+//        }
+        if savedPhotos.count > 0 {
             return savedPhotos.count
             
         } else {
@@ -229,15 +274,25 @@ extension PhotoAlbumView: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FlickerImageCell", for: indexPath) as! FlickerImageCell
         
-        if imageArray.count > 0 {
-            DispatchQueue.main.async {
-                cell.ImageView?.image = self.imageArray[indexPath.row]
-            }
-            
-        } else if savedPhotos.count > 0 {
-            let image = UIImage(data: savedPhotos[indexPath.row].image!)
-            DispatchQueue.main.async {
-                cell.ImageView?.image = image
+//        if imageArray.count > 0 {
+//            DispatchQueue.main.async {
+//                cell.ImageView?.image = self.imageArray[indexPath.row]
+//            }
+//            // Set image to place holder unless saved photos has an image, don't need image array
+//        }
+//        if savedPhotos.count > 0 {
+//            let image = UIImage(data: savedPhotos[indexPath.row].image!)
+//            DispatchQueue.main.async {
+//                cell.ImageView?.image = image
+//            }
+//        }
+        
+        if savedPhotos.count > 0 {
+            if savedPhotos[indexPath.row].image != nil {
+                let image = UIImage(data: savedPhotos[indexPath.row].image!)
+                DispatchQueue.main.async {
+                    cell.ImageView?.image = image
+                }
             }
         }
         
