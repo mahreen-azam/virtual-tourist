@@ -128,15 +128,23 @@ class TravelLocationsMapView: UIViewController, MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         // Saving selected annotation as a Pin
         do {
+            guard let coordinate = view.annotation?.coordinate else {return}
+            
             let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
-            let latitude = Double((view.annotation?.coordinate.latitude)!)
-            let longitude = Double((view.annotation?.coordinate.longitude)!)
+            let latitude = Double((coordinate.latitude))
+            let longitude = Double((coordinate.longitude))
             var predicate: NSPredicate?
             fetchRequest.predicate = predicate
             predicate = NSPredicate(format: "latitude == %@ AND longitude == %@", latitude, longitude)
             
             let result = try dataController.viewContext.fetch(fetchRequest)
-            selectedPin = result[0]
+            
+            for pin in result {
+                if pin.latitude == coordinate.latitude && pin.longitude == coordinate.longitude {
+                    selectedPin = pin
+                }
+            }
+            
         } catch {
             self.showErrorAlert(title: "Data Error", message: "Failed to find selected pin")
         }
